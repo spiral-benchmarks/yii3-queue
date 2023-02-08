@@ -1,0 +1,19 @@
+version: '2.7'
+
+logs:
+  level: debug
+  mode: production
+
+rpc:
+    listen: 'tcp://127.0.0.1:6001'
+
+server:
+    command: 'php app.php'
+    relay: pipes
+
+service:
+  queue:
+    command: php yii queue/listen amqp
+    process_num: 16
+    restart_sec: 1
+    remain_after_exit: true
