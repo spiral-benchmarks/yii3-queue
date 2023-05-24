@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\CacheLoop;
 use PhpAmqpLib\Connection\AbstractConnection;
+use PhpAmqpLib\Connection\AMQPSocketConnection;
 use Psr\Container\ContainerInterface;
 use Yiisoft\Yii\Queue\AMQP\MessageSerializer;
 use Yiisoft\Yii\Queue\AMQP\MessageSerializerInterface;
@@ -12,6 +13,7 @@ use Yiisoft\Yii\Queue\AMQP\QueueProviderInterface;
 use Yiisoft\Yii\Queue\AMQP\Settings\Queue;
 use Yiisoft\Yii\Queue\AMQP\Settings\QueueSettingsInterface;
 use Yiisoft\Yii\Queue\Cli\LoopInterface;
+use Yiisoft\Yii\Queue\Cli\SignalLoop;
 
 
 return [
@@ -25,9 +27,9 @@ return [
         ],
     ],
     AbstractConnection::class => [
-        'class' => \PhpAmqpLib\Connection\AMQPSocketConnection::class,
+        'class' => AMQPSocketConnection::class,
         '__construct()' => [
-            'host' => '127.0.0.1',
+            'host' => 'amqp',
             'port' => 5672,
             'user' => 'guest',
             'password' => 'guest',
@@ -35,7 +37,5 @@ return [
         ],
     ],
 
-    LoopInterface::class => static function (ContainerInterface $container): LoopInterface {
-        return $container->get(CacheLoop::class);
-    },
+    LoopInterface::class => SignalLoop::class
 ];

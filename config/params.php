@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Command\RunSimpleJobCommand;
+use App\Jobs\SimpleJob;
 
 return [
     'yiisoft/aliases' => [
@@ -20,7 +21,7 @@ return [
 
     'yiisoft/yii-queue' => [
         'handlers' => [
-            'simple-job' => [new App\Jobs\SimpleJob, 'handle']
+            'simple-job' => [SimpleJob::class, 'handle']
         ],
         'channel-definitions' => [
             'amqp' => [

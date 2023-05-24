@@ -25,27 +25,27 @@ return [
                 'params.php',
             ],
         ],
-        'common' => [
+        'di' => [
             'yiisoft/aliases' => [
-                'config/common.php',
+                'config/di.php',
             ],
             'yiisoft/cache' => [
-                'config/common.php',
+                'config/di.php',
             ],
             'yiisoft/cache-file' => [
-                'config/common.php',
+                'config/di.php',
             ],
             'yiisoft/log-target-file' => [
-                'config/common.php',
+                'config/di.php',
             ],
             'yiisoft/yii-queue-amqp' => [
-                'config/common.php',
+                'config/di.php',
             ],
             'yiisoft/yii-queue' => [
-                'config/common.php',
+                'config/di.php',
             ],
             'yiisoft/yii-event' => [
-                'config/common.php',
+                'config/di.php',
             ],
             '/' => [
                 'common/*.php',
@@ -58,10 +58,6 @@ return [
             'yiisoft/yii-console' => [
                 'config/events-console.php',
             ],
-            'yiisoft/yii-event' => [
-                '$events',
-                'config/events-console.php',
-            ],
             '/' => [
                 '$events',
                 'events-console.php',
@@ -71,43 +67,27 @@ return [
             'yiisoft/log' => [
                 'config/events-web.php',
             ],
-            'yiisoft/yii-event' => [
-                '$events',
-                'config/events-web.php',
-            ],
         ],
-        'console' => [
+        'di-console' => [
             'yiisoft/yii-console' => [
-                'config/console.php',
+                'config/di-console.php',
             ],
             'yiisoft/yii-event' => [
-                'config/console.php',
+                'config/di-console.php',
             ],
             '/' => [
-                '$common',
+                '$di',
                 'console/*.php',
             ],
         ],
-        'providers-console' => [
-            'yiisoft/yii-console' => [
-                'config/providers-console.php',
-            ],
-            '/' => [
-                '$providers',
-                'providers-console.php',
+        'di-web' => [
+            'yiisoft/yii-event' => [
+                'config/di-web.php',
             ],
         ],
-        'events' => [
-            'yiisoft/yii-event' => [
-                'config/events.php',
-            ],
+        'params-console' => [
             '/' => [
-                'events.php',
-            ],
-        ],
-        'web' => [
-            'yiisoft/yii-event' => [
-                'config/web.php',
+                '$params',
             ],
         ],
         'bootstrap' => [
@@ -121,9 +101,20 @@ return [
                 'bootstrap-console.php',
             ],
         ],
+        'events' => [
+            '/' => [
+                'events.php',
+            ],
+        ],
         'providers' => [
             '/' => [
                 'providers.php',
+            ],
+        ],
+        'providers-console' => [
+            '/' => [
+                '$providers',
+                'providers-console.php',
             ],
         ],
         'delegates' => [

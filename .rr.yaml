@@ -7,10 +7,6 @@ logs:
 rpc:
     listen: 'tcp://127.0.0.1:6001'
 
-server:
-    command: 'php app.php'
-    relay: pipes
-
 service:
   queue:
     command: php yii queue/listen amqp
