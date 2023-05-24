@@ -12,6 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Yiisoft\Yii\Console\ExitCode;
 use Yiisoft\Yii\Queue\AMQP\QueueProviderInterface;
+use Yiisoft\Yii\Queue\AMQP\Settings\QueueSettingsInterface;
 use Yiisoft\Yii\Queue\Cli\LoopInterface;
 use Yiisoft\Yii\Queue\Message\Message;
 use Yiisoft\Yii\Queue\QueueFactory;
@@ -25,8 +26,8 @@ final class RunSimpleJobCommand extends Command
     public function __construct(
         private readonly QueueFactory $queueFactory,
         private readonly QueueProviderInterface $queueProvider,
+        private readonly QueueSettingsInterface $queueSettings,
         private readonly CacheInterface $cache,
-        private readonly LoopInterface $loop,
     ) {
         parent::__construct();
     }
@@ -39,7 +40,7 @@ final class RunSimpleJobCommand extends Command
 
         $this->cache->set('canContinue', false);
 
-        $iteration = 100_000;
+        $iteration = 1_000_000;
 
         $output->writeln('<info>Benchmarking jobs with Yii3 Framework and Amqp</info>');
 
@@ -79,13 +80,10 @@ final class RunSimpleJobCommand extends Command
 
         $start = \microtime(true);
         $consumed = 0;
-
-        while (($iteration - $consumed) > 0) {
-            $currentConsumed = $this->getQueueSize($channel);
+        while (($queueSize = $this->getQueueSize($channel)) > 0) {
+            $bar->advance($iteration - $queueSize - $consumed);
             \usleep(50000);
-            $bar->advance($currentConsumed - $consumed);
-
-            $consumed = $currentConsumed;
+            $consumed = $iteration - $queueSize;
         }
 
         $bar->finish();
@@ -99,12 +97,10 @@ final class RunSimpleJobCommand extends Command
         return ExitCode::OK;
     }
 
-    public function getQueueSize(AMQPChannel $channel): int
+    private function getQueueSize(AMQPChannel $channel): int
     {
-        $declaredQueues = $channel->queue_declare(QueueFactoryInterface::DEFAULT_CHANNEL_NAME);
+        $declaredQueues = $channel->queue_declare(...$this->queueSettings->getPositionalSettings());
 
-        var_dump($declaredQueues);
-
-        return $declaredQueues[2] ?? 0;
+        return $declaredQueues[1] ?? 0;
     }
 }
